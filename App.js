@@ -8,8 +8,8 @@ export default function App() {
   return (
     <View style={styles.container}>
       {/* <MenuBar /> */}
-      <Detail />
-      {/* <Movies /> */}
+      {/* <Detail /> */}
+      <Movies />
     </View>
   );
 }
