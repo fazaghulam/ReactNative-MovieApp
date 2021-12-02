@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import NetworkLogger from "react-native-network-logger";
+import axios from "axios";
 import { StyleSheet, Text, View, TextInput, ScrollView } from "react-native";
 import Search from "../assets/search.svg";
 import { FlatGrid } from "react-native-super-grid";
 import Card from "../components/Card";
+import { baseUrl, api } from "../config";
 
 const init = [
   { name: "comedy", active: true },
@@ -29,6 +32,9 @@ const movies = [
 export default function Movies() {
   const [genre, setGenre] = useState(init);
   const [search, setSearch] = useState("");
+  const [suggestion, setSuggestion] = useState([]);
+
+  console.log(suggestion);
 
   const handleCategory = (i) => {
     genre.map((list) => setGenre([...genre, (list.active = false)]));
@@ -39,8 +45,19 @@ export default function Movies() {
     setSearch(text);
   };
 
+  /* things todo: create keyword suggestion popup and activate this request */
+  // useEffect(() => {
+  //   axios
+  //     .get(baseUrl + "/search/keyword" + api + "&query=" + search)
+  //     .then((response) => {
+  //       setSuggestion(response.data.results);
+  //     })
+  //     .catch(() => setSuggestion([]));
+  // }, [search]);
+
   return (
     <View style={styles.container}>
+      {/* <NetworkLogger /> */}
       <Text style={styles.title}>Find your favourite movie reviews,</Text>
       <Text style={styles.title}>rating, and more</Text>
       <View style={styles.searchSection}>
