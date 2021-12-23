@@ -3,9 +3,9 @@ import { AppRegistry } from "react-native";
 import { startNetworkLogging } from "react-native-network-logger";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import MenuBar from "./components/MenuBar";
 import Detail from "./screens/Detail";
 import Movies from "./screens/Movies";
+import Tvshow from "./screens/Tvshow";
 
 startNetworkLogging();
 AppRegistry.registerComponent("App", () => App);
@@ -22,8 +22,8 @@ export default function App() {
       >
         <Stack.Screen name="Movies" component={Movies} />
         <Stack.Screen name="Detail" component={Detail} />
+        <Stack.Screen name="Tvshow" component={Tvshow} />
       </Stack.Navigator>
-      {/* <MenuBar /> */}
     </NavigationContainer>
   );
 }

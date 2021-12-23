@@ -18,7 +18,7 @@ const init = [
   { name: "Romance", id: 10749, active: false },
 ];
 
-export default function Movies({ navigation }) {
+export default function Tvshow({ navigation }) {
   const [genre, setGenre] = useState(init);
   const [search, setSearch] = useState("");
   const [suggestion, setSuggestion] = useState([]);
@@ -61,8 +61,7 @@ export default function Movies({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Find your favourite movie reviews,</Text>
-      <Text style={styles.title}>rating, and more</Text>
+      <Text style={styles.title}>Find your favourite TV Show reviews, rating, and more</Text>
       <View style={{ position: "relative", paddingHorizontal: 20 }}>
         <View style={styles.searchSection}>
           <Search />
@@ -71,7 +70,7 @@ export default function Movies({ navigation }) {
             onFocus={() => setSearchFocus(true)}
             style={styles.input}
             underlineColorAndroid="transparent"
-            placeholder="search movies"
+            placeholder="search tv show"
             placeholderTextColor="#626262"
             value={search}
             onChangeText={(text) => handleSearch(text)}
@@ -113,7 +112,7 @@ export default function Movies({ navigation }) {
           </TouchableOpacity>
         )}
       />
-      <MenuBar state="0" setTvshow={() => navigation.navigate("Tvshow")} />
+      <MenuBar state="1" setFilm={() => navigation.navigate("Movies")} />
     </View>
   );
 }

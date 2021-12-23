@@ -1,13 +1,19 @@
-import React, { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React from "react";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
+import Film from "../assets/film.svg";
+import Tvshow from "../assets/tvshow.svg";
+import FilmActive from "../assets/film_active.svg";
+import TvshowActive from "../assets/tvshow_active.svg";
 
-export default function MenuBar({ menu }) {
-  const [state, setState] = useState(1);
-
+export default function MenuBar({ state, setFilm, setTvshow }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Hello</Text>
-      <Text style={styles.text}>world</Text>
+      <TouchableOpacity onPress={setFilm} style={{ width: "50%", height: "100%", justifyContent: "center", alignItems: "center" }}>
+        {state == 0 ? <FilmActive /> : <Film />}
+      </TouchableOpacity>
+      <TouchableOpacity onPress={setTvshow} style={{ width: "50%", height: "100%", justifyContent: "center", alignItems: "center" }}>
+        {state == 1 ? <TvshowActive /> : <Tvshow />}
+      </TouchableOpacity>
     </View>
   );
 }
