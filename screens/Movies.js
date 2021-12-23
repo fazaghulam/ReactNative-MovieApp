@@ -8,13 +8,13 @@ import Card from "../components/Card";
 import { baseUrl, api } from "../config";
 
 const init = [
-  { name: "comedy", active: true },
-  { name: "action", active: false },
-  { name: "romance", active: false },
-  { name: "drama", active: false },
-  { name: "horror", active: false },
-  { name: "documentary", active: false },
-  { name: "religion", active: false },
+  { name: "Action", id: 28, active: true },
+  { name: "Adventure", id: 12, active: false },
+  { name: "Animation", id: 16, active: false },
+  { name: "Comedy", id: 35, active: false },
+  { name: "Drama", id: 18, active: false },
+  { name: "Horror", id: 27, active: false },
+  { name: "Romance", id: 10749, active: false },
 ];
 
 const movies = [
@@ -33,27 +33,36 @@ export default function Movies() {
   const [genre, setGenre] = useState(init);
   const [search, setSearch] = useState("");
   const [suggestion, setSuggestion] = useState([]);
+  const [genreId, setGenreId] = useState(28);
+  const [movie, setMovie] = useState([]);
 
-  console.log(suggestion);
+  console.log(movie);
 
-  const handleCategory = (i) => {
+  const handleCategory = (i, id) => {
     genre.map((list) => setGenre([...genre, (list.active = false)]));
     setGenre([...genre, (genre[i].active = true)]);
+    setGenreId(id);
   };
 
   const handleSearch = (text) => {
     setSearch(text);
   };
 
+  useEffect(() => {
+    axios.get(baseUrl + "/discover/movie" + api + "&sort_by=popularity.asc&page=1&with_genres=" + genreId).then((response) => {
+      setMovie(response.data.results);
+    });
+  }, [genreId]);
+
   /* things todo: create keyword suggestion popup and activate this request */
-  // useEffect(() => {
-  //   axios
-  //     .get(baseUrl + "/search/keyword" + api + "&query=" + search)
-  //     .then((response) => {
-  //       setSuggestion(response.data.results);
-  //     })
-  //     .catch(() => setSuggestion([]));
-  // }, [search]);
+  useEffect(() => {
+    axios
+      .get(baseUrl + "/search/keyword" + api + "&query=" + search)
+      .then((response) => {
+        setSuggestion(response.data.results);
+      })
+      .catch(() => setSuggestion([]));
+  }, [search]);
 
   return (
     <View style={styles.container}>
@@ -73,13 +82,13 @@ export default function Movies() {
       <View style={{ height: 25 }}>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           {genre.map((list, i) => (
-            <Text key={i} style={list.active ? styles.textactive : styles.text} onPress={() => handleCategory(i)}>
+            <Text key={i} style={list.active ? styles.textactive : styles.text} onPress={() => handleCategory(i, list.id)}>
               {list.name}
             </Text>
           ))}
         </ScrollView>
       </View>
-      <FlatGrid style={styles.gridView} spacing={10} data={movies} renderItem={({ item }) => <Card title={item.title} />} />
+      <FlatGrid style={styles.gridView} spacing={10} data={movie} renderItem={({ item }) => <Card title={item.title} poster={item.poster_path} />} />
     </View>
   );
 }

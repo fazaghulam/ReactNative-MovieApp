@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, Image } from "react-native";
 
-export default function Card({ title, year }) {
+export default function Card({ title, poster }) {
   return (
     <View style={{ width: 160, marginBottom: 20 }}>
       <View style={styles.container}>
-        <Image style={styles.image} source={require("../assets/queen.jpg")} />
+        <Image style={styles.image} source={{ uri: `https://image.tmdb.org/t/p/original${poster}` }} />
       </View>
       <Text style={{ color: "white", fontSize: 15, textAlign: "center" }}>{title}</Text>
     </View>
