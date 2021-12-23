@@ -5,7 +5,10 @@ export default function Card({ title, poster }) {
   return (
     <View style={{ width: 160, marginBottom: 20 }}>
       <View style={styles.container}>
-        <Image style={styles.image} source={{ uri: `https://image.tmdb.org/t/p/original${poster}` }} />
+        <Image
+          style={styles.image}
+          source={(poster && { uri: `https://image.tmdb.org/t/p/original${poster}` }) || require("../assets/no-poster.png")}
+        />
       </View>
       <Text style={{ color: "white", fontSize: 15, textAlign: "center" }}>{title}</Text>
     </View>
