@@ -1,24 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import { FlatGrid } from "react-native-super-grid";
-import Clock from "../assets/clock.svg";
 import Card from "../components/Card";
 import axios from "axios";
 import { baseUrl, api } from "../config";
 
-export default function Detail({ navigation, route }) {
+export default function DetailTv({ navigation, route }) {
   const data = route.params.data;
   const [related, setRelated] = useState([]);
   const [genre, setGenre] = useState([]);
-  const [duration, setDuration] = useState("");
+  const [firstDate, setFirstDate] = useState("");
+  const [episode, setEpisode] = useState("");
+  const [season, setSeason] = useState("");
 
   useEffect(() => {
-    axios.get(baseUrl + "/movie/" + data.id + api).then((response) => {
+    axios.get(baseUrl + "/tv/" + data.id + api).then((response) => {
       setGenre(response.data.genres.map((a) => a.name));
-      setDuration(response.data.runtime);
+      setFirstDate(response.data.first_air_date);
+      setEpisode(response.data.number_of_episodes);
+      setSeason(response.data.number_of_seasons);
     });
 
-    axios.get(baseUrl + "/movie/" + data.id + "/recommendations" + api).then((response) => {
+    axios.get(baseUrl + "/tv/" + data.id + "/recommendations" + api).then((response) => {
       setRelated(response.data.results);
     });
   }, []);
@@ -38,15 +41,11 @@ export default function Detail({ navigation, route }) {
       <FlatGrid
         ListHeaderComponent={
           <>
-            <Text style={styles.title}>{data.title}</Text>
-            <View style={{ flexDirection: "row", marginBottom: 23 }}>
-              <Clock />
-              <Text style={[styles.subText, { marginLeft: 5 }]}>{duration ? duration + " minutes" : "-"}</Text>
-            </View>
-            <View style={{ flexDirection: "row", marginBottom: 23 }}>
+            <Text style={styles.title}>{data.name}</Text>
+            <View style={{ flexDirection: "row", marginBottom: 10 }}>
               <View style={{ width: "50%" }}>
-                <Text style={styles.text}>Release Date</Text>
-                <Text style={styles.subText}>{data.release_date ? data.release_date : "-"}</Text>
+                <Text style={styles.text}>First Release Date</Text>
+                <Text style={styles.subText}>{firstDate ? firstDate : "-"}</Text>
               </View>
               <View style={{ width: "50%" }}>
                 <Text style={styles.text}>Genre</Text>
@@ -59,20 +58,22 @@ export default function Detail({ navigation, route }) {
                 </View>
               </View>
             </View>
-            <View style={{ marginBottom: 23 }}>
+            <Text style={styles.text}>Number of Season: {season ? season : "-"}</Text>
+            <Text style={styles.text}>Number of Episode: {episode ? episode : "-"}</Text>
+            <View style={{ marginBottom: 23, marginTop: 10 }}>
               <Text style={styles.text}>Synopsis</Text>
               <Text style={styles.subText}>{data.overview ? data.overview : "-"}</Text>
             </View>
-            <Text style={[styles.text, { marginBottom: 5 }]}>Related Movies</Text>
-            {related.length == 0 && <Text style={styles.subText}>no related movies found</Text>}
+            <Text style={[styles.text, { marginBottom: 5 }]}>Related Tv Show</Text>
+            {related.length == 0 && <Text style={styles.subText}>no related tv show found</Text>}
           </>
         }
         style={styles.gridView}
         spacing={10}
         data={related}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => navigation.navigate("Detail", { data: item })}>
-            <Card title={item.title} poster={item.poster_path} />
+          <TouchableOpacity onPress={() => navigation.navigate("DetailTv", { data: item })}>
+            <Card title={item.name} poster={item.poster_path} />
           </TouchableOpacity>
         )}
       />

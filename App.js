@@ -4,6 +4,7 @@ import { startNetworkLogging } from "react-native-network-logger";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Detail from "./screens/Detail";
+import DetailTv from "./screens/DetailTv";
 import Movies from "./screens/Movies";
 import Tvshow from "./screens/Tvshow";
 
@@ -22,6 +23,7 @@ export default function App() {
       >
         <Stack.Screen name="Movies" component={Movies} />
         <Stack.Screen name="Detail" component={Detail} />
+        <Stack.Screen name="DetailTv" component={DetailTv} />
         <Stack.Screen name="Tvshow" component={Tvshow} />
       </Stack.Navigator>
     </NavigationContainer>

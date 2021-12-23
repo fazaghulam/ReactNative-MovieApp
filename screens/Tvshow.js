@@ -9,22 +9,23 @@ import MenuBar from "../components/MenuBar";
 import { baseUrl, api } from "../config";
 
 const init = [
-  { name: "Action", id: 28, active: true },
-  { name: "Adventure", id: 12, active: false },
+  { name: "Action & Adventure", id: 10759, active: true },
   { name: "Animation", id: 16, active: false },
-  { name: "Comedy", id: 35, active: false },
+  { name: "Crime", id: 80, active: false },
   { name: "Drama", id: 18, active: false },
-  { name: "Horror", id: 27, active: false },
-  { name: "Romance", id: 10749, active: false },
+  { name: "Family", id: 10751, active: false },
+  { name: "Mystery", id: 9648, active: false },
+  { name: "Sci-Fi & Fantasy", id: 10765, active: false },
+  { name: "War & Politics", id: 10768, active: false },
 ];
 
 export default function Tvshow({ navigation }) {
   const [genre, setGenre] = useState(init);
   const [search, setSearch] = useState("");
   const [suggestion, setSuggestion] = useState([]);
-  const [genreId, setGenreId] = useState(28);
-  const [movie, setMovie] = useState([]);
-  const [movieSearch, setMovieSearch] = useState([]);
+  const [genreId, setGenreId] = useState(10759);
+  const [tvshow, setTvshow] = useState([]);
+  const [tvshowSearch, setTvshowSearch] = useState([]);
   const [searchFocus, setSearchFocus] = useState(false);
 
   const handleCategory = (i, id) => {
@@ -38,8 +39,8 @@ export default function Tvshow({ navigation }) {
   };
 
   useEffect(() => {
-    axios.get(baseUrl + "/discover/movie" + api + "&sort_by=popularity.asc&page=1&with_genres=" + genreId).then((response) => {
-      setMovie(response.data.results);
+    axios.get(baseUrl + "/discover/tv" + api + "&sort_by=popularity.asc&page=1&with_genres=" + genreId).then((response) => {
+      setTvshow(response.data.results);
     });
   }, [genreId]);
 
@@ -52,11 +53,11 @@ export default function Tvshow({ navigation }) {
       .catch(() => setSuggestion([]));
 
     axios
-      .get(baseUrl + "/search/movie" + api + "&query=" + search)
+      .get(baseUrl + "/search/tv" + api + "&query=" + search)
       .then((response) => {
-        setMovieSearch(response.data.results);
+        setTvshowSearch(response.data.results);
       })
-      .catch(() => setMovieSearch([]));
+      .catch(() => setTvshowSearch([]));
   }, [search]);
 
   return (
@@ -90,7 +91,7 @@ export default function Tvshow({ navigation }) {
             </ScrollView>
           </View>
         )}
-        {movieSearch.length == 0 && (
+        {tvshowSearch.length == 0 && (
           <View style={{ height: 25 }}>
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
               {genre.map((list, idx) => (
@@ -105,10 +106,10 @@ export default function Tvshow({ navigation }) {
       <FlatGrid
         style={styles.gridView}
         spacing={10}
-        data={movieSearch.length > 0 ? movieSearch : movie}
+        data={tvshowSearch.length > 0 ? tvshowSearch : tvshow}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => navigation.navigate("Detail", { data: item })}>
-            <Card title={item.title} poster={item.poster_path} />
+          <TouchableOpacity onPress={() => navigation.navigate("DetailTv", { data: item })}>
+            <Card title={item.name} poster={item.poster_path} />
           </TouchableOpacity>
         )}
       />
