@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import NetworkLogger from "react-native-network-logger";
 import axios from "axios";
-import { StyleSheet, Text, View, TextInput, ScrollView } from "react-native";
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView } from "react-native";
 import Search from "../assets/search.svg";
+import Close from "../assets/close.svg";
 import { FlatGrid } from "react-native-super-grid";
 import Card from "../components/Card";
 import { baseUrl, api } from "../config";
@@ -17,26 +17,14 @@ const init = [
   { name: "Romance", id: 10749, active: false },
 ];
 
-const movies = [
-  { title: "squid game" },
-  { title: "bird box" },
-  { title: "queens gambit" },
-  { title: "dare devil" },
-  { title: "money heist" },
-  { title: "prison break" },
-  { title: "prison break" },
-  { title: "prison break" },
-  { title: "prison break" },
-];
-
-export default function Movies() {
+export default function Movies({ navigation }) {
   const [genre, setGenre] = useState(init);
   const [search, setSearch] = useState("");
   const [suggestion, setSuggestion] = useState([]);
   const [genreId, setGenreId] = useState(28);
   const [movie, setMovie] = useState([]);
-
-  console.log(movie);
+  const [movieSearch, setMovieSearch] = useState([]);
+  const [searchFocus, setSearchFocus] = useState(false);
 
   const handleCategory = (i, id) => {
     genre.map((list) => setGenre([...genre, (list.active = false)]));
@@ -54,7 +42,6 @@ export default function Movies() {
     });
   }, [genreId]);
 
-  /* things todo: create keyword suggestion popup and activate this request */
   useEffect(() => {
     axios
       .get(baseUrl + "/search/keyword" + api + "&query=" + search)
@@ -62,33 +49,69 @@ export default function Movies() {
         setSuggestion(response.data.results);
       })
       .catch(() => setSuggestion([]));
+
+    axios
+      .get(baseUrl + "/search/movie" + api + "&query=" + search)
+      .then((response) => {
+        setMovieSearch(response.data.results);
+      })
+      .catch(() => setMovieSearch([]));
   }, [search]);
 
   return (
     <View style={styles.container}>
-      {/* <NetworkLogger /> */}
       <Text style={styles.title}>Find your favourite movie reviews,</Text>
       <Text style={styles.title}>rating, and more</Text>
-      <View style={styles.searchSection}>
-        <Search />
-        <TextInput
-          style={styles.input}
-          underlineColorAndroid="transparent"
-          placeholder="search movies"
-          placeholderTextColor="#626262"
-          onChangeText={(text) => handleSearch(text)}
-        />
+      <View style={{ position: "relative" }}>
+        <View style={styles.searchSection}>
+          <Search />
+          <TextInput
+            onBlur={() => setSearchFocus(false)}
+            onFocus={() => setSearchFocus(true)}
+            style={styles.input}
+            underlineColorAndroid="transparent"
+            placeholder="search movies"
+            placeholderTextColor="#626262"
+            value={search}
+            onChangeText={(text) => handleSearch(text)}
+          />
+          <TouchableOpacity onPress={() => setSearch("")}>
+            <Close />
+          </TouchableOpacity>
+        </View>
+        {suggestion.length > 0 && searchFocus && (
+          <View style={styles.dropdown}>
+            <ScrollView>
+              {suggestion.map((list, idx) => (
+                <TouchableOpacity key={idx} onPress={() => setSearch(list.name)}>
+                  <Text style={{ color: "white" }}>{list.name}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        )}
+        {movieSearch.length == 0 && (
+          <View style={{ height: 25 }}>
+            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+              {genre.map((list, i) => (
+                <Text key={i} style={list.active ? styles.textactive : styles.text} onPress={() => handleCategory(i, list.id)}>
+                  {list.name}
+                </Text>
+              ))}
+            </ScrollView>
+          </View>
+        )}
       </View>
-      <View style={{ height: 25 }}>
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          {genre.map((list, i) => (
-            <Text key={i} style={list.active ? styles.textactive : styles.text} onPress={() => handleCategory(i, list.id)}>
-              {list.name}
-            </Text>
-          ))}
-        </ScrollView>
-      </View>
-      <FlatGrid style={styles.gridView} spacing={10} data={movie} renderItem={({ item }) => <Card title={item.title} poster={item.poster_path} />} />
+      <FlatGrid
+        style={styles.gridView}
+        spacing={10}
+        data={movieSearch.length > 0 ? movieSearch : movie}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => navigation.navigate("Detail", { data: item })}>
+            <Card title={item.title} poster={item.poster_path} />
+          </TouchableOpacity>
+        )}
+      />
     </View>
   );
 }
@@ -99,6 +122,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     flex: 1,
     backgroundColor: "#16151E",
+    position: "relative",
+  },
+  dropdown: {
+    width: "80%",
+    maxHeight: 100,
+    backgroundColor: "#322D48",
+    paddingHorizontal: 5,
+    paddingVertical: 5,
+    position: "absolute",
+    zIndex: 1,
+    top: 80,
   },
   gridView: {
     marginTop: 10,
@@ -121,6 +155,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     height: 40,
     color: "white",
+    width: "90%",
   },
   text: {
     color: "white",

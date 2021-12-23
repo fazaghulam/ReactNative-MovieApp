@@ -1,6 +1,8 @@
-import React, { useState } from "react";
-import { StyleSheet, Text, View, AppRegistry } from "react-native";
+import React from "react";
+import { AppRegistry } from "react-native";
 import { startNetworkLogging } from "react-native-network-logger";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import MenuBar from "./components/MenuBar";
 import Detail from "./screens/Detail";
 import Movies from "./screens/Movies";
@@ -8,22 +10,20 @@ import Movies from "./screens/Movies";
 startNetworkLogging();
 AppRegistry.registerComponent("App", () => App);
 
+const Stack = createNativeStackNavigator();
+
 export default function App() {
   return (
-    <View style={styles.container}>
+    <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen name="Movies" component={Movies} />
+        <Stack.Screen name="Detail" component={Detail} />
+      </Stack.Navigator>
       {/* <MenuBar /> */}
-      {/* <Detail /> */}
-      <Movies />
-    </View>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  text: {
-    color: "red",
-  },
-});
